@@ -1,3 +1,31 @@
+# Potential bug with `poly test`
+
+Run `clojure -M:poly test :dev :all`
+
+Expected:
+
+Tests should run cleanly.
+
+Actual:
+
+ClassNotFoundException from the `clojure.core.server/repl` reference -- note that `clojure.core.server` is
+required as part of Clojure's bootstrap so it should always be available without being explicitly required in a namespace.
+
+You can see this via a REPL session:
+
+```clojure
+(~/clojure)-(!1189)-> clj
+Clojure 1.11.1
+user=> (clojure.core.server/repl)
+user=> nil
+user=>
+```
+
+Thesis:
+
+We believe that the way Polylith constructs isolated classloaders for running tests produces an "unusual" Clojure environment.
+In our tests at work, we see other strange failures running `poly test` that all pass using Cognitect's `test-runner` directly.
+
 <img src="https://github.com/polyfy/polylith/blob/master/images/logo.png" width="30%" alt="Polylith" id="logo">
 
 The Polylith documentation can be found here:
